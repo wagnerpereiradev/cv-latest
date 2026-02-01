@@ -70,10 +70,10 @@ export default function Home() {
           <SectionTitle icon={User}>Resumo Profissional</SectionTitle>
           <div className="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400 space-y-4">
             <p>
-              Desenvolvedor de Software com foco em Inteligência Artificial aplicada, Web Services e produtos digitais, atuando no desenvolvimento de soluções tecnológicas orientadas a problemas reais de negócio. Especialista na integração de APIs avançadas de IA, automação de processos, arquiteturas web modernas e análise de dados para geração de insights acionáveis.
+              Sou desenvolvedor de Software com foco em Inteligência Artificial aplicada, Web Services e produtos digitais. Atuo no desenvolvimento de soluções tecnológicas orientadas a problemas reais de negócio e tenho experiência na integração de APIs avançadas de IA, automação de processos, arquiteturas web modernas e análise de dados para geração de insights acionáveis.
             </p>
             <p>
-              Experiência prática no desenvolvimento de agentes de IA, aplicações web full stack, integração com ERPs, pipelines de dados e produtos orientados a escala. Atuação híbrida entre engenharia, produto e negócio, com forte visão de MVP, iteração rápida e entrega de valor.
+              Fiz transição de carreira com bagagem em marketing e gestão: minha experiência estratégica me permite construir produtos com visão de negócio (<strong className="text-zinc-700 dark:text-zinc-300">Business-oriented Developer</strong>), alinhando técnica e impacto no negócio. Tenho experiência prática no desenvolvimento de agentes de IA, aplicações web full stack, integração com ERPs, pipelines de dados e produtos orientados a escala. Atuo de forma híbrida entre engenharia, produto e negócio, com forte visão de MVP, iteração rápida e entrega de valor.
             </p>
           </div>
         </section>
@@ -85,6 +85,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-2">
             {[
               'Inteligência Artificial aplicada (OpenAI, Anthropic, DeepSeek)',
+              'RAG e bancos de vetores (Supabase/pgvector, Oracle AI Vector Search)',
               'Desenvolvimento de Agentes de IA e Assistentes Conversacionais',
               'APIs REST & Integrações Web Services',
               'Cloud Computing (AWS, Google Cloud)',
@@ -128,11 +129,11 @@ export default function Home() {
           <SectionTitle icon={Code}>Tecnologias e Ferramentas</SectionTitle>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-[15px]">
             {[
-              { title: 'IA & APIs', text: 'OpenAI API · OpenAI Assistants v2 · OpenAI Whisper · Anthropic API · DeepSeek API' },
+              { title: 'IA & APIs', text: 'OpenAI API · OpenAI Assistants v2 · OpenAI Whisper · Anthropic API · DeepSeek API · RAG e bancos de vetores (Supabase/pgvector, Oracle AI Vector Search)' },
               { title: 'Frontend', text: 'HTML5 · CSS3 · JavaScript · React.js · Next.js · Vue · TailwindCSS' },
               { title: 'Backend & Dados', text: 'PHP · MySQL · REST APIs · OAuth 2.0' },
               { title: 'Cloud & Dev', text: 'AWS · Google Cloud' },
-              { title: 'Produto & Design', text: 'Figma · Adobe XD · UI/UX' },
+              { title: 'Produto & Design', text: 'Figma · Adobe XD · Illustrator · Photoshop · Cinema 4D · UI/UX' },
               { title: 'Marketing & Dados', text: 'Google Ads · Meta Ads · Google Analytics · Google Business API' },
             ].map(({ title, text }) => (
               <div key={title}>
