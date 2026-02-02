@@ -88,13 +88,14 @@ export default function Home() {
               'RAG e bancos de vetores (Supabase/pgvector, Oracle AI Vector Search)',
               'Desenvolvimento de Agentes de IA e Assistentes Conversacionais',
               'APIs REST & Integrações Web Services',
-              'Cloud Computing (AWS, Google Cloud)',
+              'Cloud Computing (AWS Lambda, API Gateway, S3, Google Cloud)',
               'Frontend moderno (Next.js, React, Vue, TailwindCSS)',
-              'Backend (PHP, MySQL, Node.js – integração e automação)',
+              'Backend (PHP, MySQL, Node.js, Python, Java – integração e automação)',
               'Arquitetura de MVPs e Produtos Digitais',
               'UI/UX aplicado a produto',
               'Automação de processos',
               'Gestão de projetos de tecnologia',
+              'Docker',
             ].map((skill) => (
               <span key={skill} className="inline-flex px-3.5 py-1.5 rounded-full text-[13px] bg-zinc-100 dark:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 border border-zinc-200/50 dark:border-zinc-700/50">
                 {skill}
@@ -129,15 +130,76 @@ export default function Home() {
           <SectionTitle icon={Code}>Tecnologias e Ferramentas</SectionTitle>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-[15px]">
             {[
-              { title: 'IA & APIs', text: 'OpenAI API · OpenAI Assistants v2 · OpenAI Whisper · Anthropic API · DeepSeek API · RAG e bancos de vetores (Supabase/pgvector, Oracle AI Vector Search)' },
-              { title: 'Frontend', text: 'HTML5 · CSS3 · JavaScript · React.js · Next.js · Vue · TailwindCSS' },
-              { title: 'Backend & Dados', text: 'PHP · MySQL · REST APIs · OAuth 2.0' },
-              { title: 'Cloud & Dev', text: 'AWS · Google Cloud' },
-              { title: 'Produto & Design', text: 'Figma · Adobe XD · Illustrator · Photoshop · Cinema 4D · UI/UX' },
-              { title: 'Marketing & Dados', text: 'Google Ads · Meta Ads · Google Analytics · Google Business API' },
-            ].map(({ title, text }) => (
+              {
+                title: 'IA & APIs',
+                text: 'OpenAI API · OpenAI API Responses · OpenAI Whisper · Anthropic API · DeepSeek API · RAG e bancos de vetores (Supabase/pgvector, Oracle AI Vector Search)',
+                logos: [
+                  { name: 'OpenAI', url: 'https://us1.discourse-cdn.com/openai1/original/4X/3/2/1/321a1ba297482d3d4060d114860de1aa5610f8a9.png' },
+                  { name: 'Supabase', url: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/supabase.webp' },
+                  { name: 'Anthropic', url: 'https://www.primarymarkets.com/wp-content/uploads/2024/03/Anthropic-Circle-Logo.png' },
+                ],
+              },
+              {
+                title: 'Frontend',
+                text: 'HTML5 · CSS3 · JavaScript · React.js · Next.js · Vue · TailwindCSS',
+                logos: [
+                  { name: 'HTML5', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
+                  { name: 'CSS3', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
+                  { name: 'JavaScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+                  { name: 'React', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+                  { name: 'Next.js', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
+                  { name: 'Vue', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg' },
+                  { name: 'Tailwind', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
+                ],
+              },
+              {
+                title: 'Backend & Dados',
+                text: 'PHP · MySQL · Node.js · Python · Java · REST APIs · OAuth 2.0',
+                logos: [
+                  { name: 'PHP', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' },
+                  { name: 'MySQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+                  { name: 'Node.js', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+                  { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+                  { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+                ],
+              },
+              {
+                title: 'Cloud & Dev',
+                text: 'AWS (Lambda, API Gateway, S3 Storage) · Google Cloud · Docker',
+                logos: [
+                  { name: 'AWS', url: 'https://s3.us-west-2.amazonaws.com/content.podia.com/8jo3atdj7sj3s641ee9r03cv152u' },
+                  { name: 'Google Cloud', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg' },
+                  { name: 'Docker', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
+                ],
+              },
+              {
+                title: 'Produto & Design',
+                text: 'Figma · Adobe XD · Illustrator · Photoshop · Cinema 4D · UI/UX',
+                logos: [
+                  { name: 'Figma', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
+                  { name: 'Adobe XD', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Adobe_XD_CC_icon.svg/960px-Adobe_XD_CC_icon.svg.png' },
+                  { name: 'Illustrator', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Adobe_Illustrator_CC_icon.svg/500px-Adobe_Illustrator_CC_icon.svg.png' },
+                  { name: 'Photoshop', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/3840px-Adobe_Photoshop_CC_icon.svg.png' },
+                  { name: 'Cinema 4D', url: 'https://upload.wikimedia.org/wikipedia/fr/d/d8/C4D_Logo.png' },
+                ],
+              },
+              {
+                title: 'Marketing & Dados',
+                text: 'Google Ads · Meta Ads · Google Analytics · Google Business API',
+                logos: [
+                  { name: 'Google', url: 'https://cdn.simpleicons.org/google/4285F4' },
+                  { name: 'Meta', url: 'https://cdn.simpleicons.org/meta/0668E1' },
+                  { name: 'Google Analytics', url: 'https://cdn.simpleicons.org/googleanalytics/E37400' },
+                ],
+              },
+            ].map(({ title, text, logos }) => (
               <div key={title}>
-                <h3 className="font-medium text-zinc-800 dark:text-zinc-300 mb-1.5 text-[13px] uppercase tracking-wider">{title}</h3>
+                <h3 className="font-medium text-zinc-800 dark:text-zinc-300 mb-2 text-[13px] uppercase tracking-wider">{title}</h3>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  {logos.map((logo) => (
+                    <img key={logo.name} src={logo.url} alt={logo.name} title={logo.name} className="w-6 h-6 object-contain opacity-85 dark:opacity-75 shrink-0" />
+                  ))}
+                </div>
                 <p className="text-zinc-500 dark:text-zinc-500 leading-relaxed">{text}</p>
               </div>
             ))}
