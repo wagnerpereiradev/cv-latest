@@ -1,4 +1,7 @@
-import { Mail, Phone, Github, Linkedin, User, Briefcase, Code, GraduationCap, MapPin, Calendar, Award, Sparkles } from 'lucide-react';
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { Mail, Phone, Github, Linkedin, User, Briefcase, Code, GraduationCap, MapPin, Calendar, Award, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -18,8 +21,114 @@ function SectionTitle({ children, icon: Icon }: { children: React.ReactNode; ico
 }
 
 export default function Home() {
+  const [lightbox, setLightbox] = useState<{
+    urls: string[];
+    index: number;
+    eventLogo: string;
+    eventTitle: string;
+  } | null>(null);
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  const goPrev = useCallback(() => {
+    setLightbox((prev) =>
+      prev
+        ? { ...prev, index: (prev.index - 1 + prev.urls.length) % prev.urls.length }
+        : null
+    );
+  }, []);
+
+  const goNext = useCallback(() => {
+    setLightbox((prev) =>
+      prev
+        ? { ...prev, index: (prev.index + 1) % prev.urls.length }
+        : null
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [lightbox, closeLightbox, goPrev, goNext]);
+
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-black text-zinc-900 dark:text-zinc-50">
+      {/* Lightbox modal */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Visualizar imagem"
+        >
+          <button
+            type="button"
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+            aria-label="Fechar"
+          >
+            <X className="w-5 h-5" strokeWidth={2} />
+          </button>
+
+          {lightbox.urls.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(ev) => { ev.stopPropagation(); goPrev(); }}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+                aria-label="Imagem anterior"
+              >
+                <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                onClick={(ev) => { ev.stopPropagation(); goNext(); }}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+                aria-label="Próxima imagem"
+              >
+                <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
+              </button>
+            </>
+          )}
+
+          <img
+            src={lightbox.urls[lightbox.index]}
+            alt={`Imagem ${lightbox.index + 1} de ${lightbox.urls.length}`}
+            className="max-w-full max-h-[85vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+            onClick={(ev) => ev.stopPropagation()}
+          />
+
+          {/* Pílula flutuante estilo Dynamic Island */}
+          <div
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 px-4 py-1 pl-1 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl min-w-0 max-w-[90vw]"
+            onClick={(ev) => ev.stopPropagation()}
+          >
+            <img
+              src={lightbox.eventLogo}
+              alt=""
+              className="w-8 h-8 rounded-full object-cover shrink-0 flex-shrink-0"
+            />
+            <span className="text-sm font-medium text-white truncate flex-1 min-w-0">
+              {lightbox.eventTitle}
+            </span>
+            <span className="text-xs text-white/70 tabular-nums shrink-0">
+              {lightbox.index + 1}<span className="text-white/50"> / </span>{lightbox.urls.length}
+            </span>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 pb-24">
         {/* Hero */}
         <header className="mb-20">
@@ -397,25 +506,87 @@ export default function Home() {
           <SectionTitle icon={Award}>Eventos, Hackathons e Capacitação</SectionTitle>
           <div className="space-y-6">
             {[
-              { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVer_wMBRrUuTJfkLE_pq1nZRrlaHrWVkNUA&s', title: 'Imersão DiscoverAI – 16h', org: 'Oracle Brasil', desc: 'Imersão em Inteligência Artificial realizada no escritório Oracle do Morumbi em São Paulo, com visita ao datacenter mostruário. Abordou temas como LLMs e GenAI, RAG e Vector Search, Oracle APEX e Banco de Dados, com apresentação prática final dos conhecimentos adquiridos.' },
+              {
+                logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVer_wMBRrUuTJfkLE_pq1nZRrlaHrWVkNUA&s', title: 'Imersão DiscoverAI – 16h', org: 'Oracle Brasil', desc: 'Imersão em Inteligência Artificial realizada no escritório Oracle do Morumbi em São Paulo, com visita ao datacenter mostruário. Abordou temas como LLMs e GenAI, RAG e Vector Search, Oracle APEX e Banco de Dados, com apresentação prática final dos conhecimentos adquiridos.', gallery: [
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczNT1JRCExk3c0eoER7TX8Kyz4ObrDPwYEstDpEFF8hh-MLoOl7Rk4hGCvo65-AzhboqoFBobWWS3I0QGKOvg4tORGACCnMqM4hN0-p0ndofKOiNwrhoZ1_uA-y5njiMXSY4R9vYMvN1veFa2H88WUbbMw=w1424-h1898-s-no-gm', ratio: '3:4' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczNFnJa_TcSqAKFbnoBB3dURUE8AeBriPYftrf3DMoO-_HEDsZPTY8xOir6oickMMt04pAvotE8fyKJVui27QcZTvQvDkzlZxXS0-vUlgdYSN8PeBzzpZoChndJGTtRQRB-YXswSR4RCChSLew89OOOW3Q=w2848-h1898-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczNcMaN1zFywQbncAIEcyI9NAzmaVMX2fo8v7AixGwQD2l3CoitY2MGaU0q2ZTgDuBHIAVKaSVZNC5Fky91yaIwGsR9hg-jCXvfVmZEUfTV86dox5yJgwNaNgGew84EE5anP35zpTU2I4YujtBWS5VQ68A=w1424-h1898-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczPG0R7tORkJWmQga5AI55q9sKjfwRStLoeTBvNMpcqD2hb-YF2mPsSEPEbIvlRkBgktCIvWJPrTFzTPyiPOYFXH20YZPRBhjkd3ey9WzDrb2MZHYXj_VLNVD4uAPBiVkAgeDGvXGSOkgro4MIsBMNtmbQ=w1424-h1898-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczN7tTBBA0BhFACfhNx5jAplpd1IsOFAt2II2kWj_r_JtcdXLjv_bux-sArGUUu4mIGOS-RYOAsHvSLG1lh2t4_Pv-bWHvhAE9iS0tSlNVrS84ITRtFj7Jip77ySCHfeQxUL5M4dPZjfDdV3k6w1Vj-UTw=w1424-h1898-s-no-gm', ratio: '1:1' },
+                ]
+              },
               { logo: 'https://1000logos.net/wp-content/uploads/2020/05/Emblem-Google-Cloud.jpg', title: 'GenAI e Workshop de Chatbots', org: 'Google Cloud', desc: 'Evento técnico com foco em Inteligência Artificial Generativa, desenvolvimento de chatbots, aplicações práticas de IA em nuvem e integração de modelos de linguagem em soluções reais.' },
-              { logo: 'https://1000logos.net/wp-content/uploads/2020/05/Emblem-Google-Cloud.jpg', title: 'DevOps e GenAI', org: 'Google Cloud', desc: 'Capacitação técnica abordando práticas modernas de DevOps integradas a soluções de Inteligência Artificial Generativa, automação de pipelines e arquitetura em nuvem.' },
+              {
+                logo: 'https://1000logos.net/wp-content/uploads/2020/05/Emblem-Google-Cloud.jpg', title: 'DevOps e GenAI', org: 'Google Cloud', desc: 'Capacitação técnica abordando práticas modernas de DevOps integradas a soluções de Inteligência Artificial Generativa, automação de pipelines e arquitetura em nuvem.', gallery: [
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczOrevTbTbBYgDRkVRBZvVfaTynbd3_hjDQQaOpiM8WWJ9PIgK5jdOJorU8kgiHolbFdFZNzXf_FLeF4IFJzC--F1x7sx6i2-t0Wt3LG_yUZFfI5rmgxvrhkWmQ-Kyl0SO8M-2T6mxt1JucCrVSDdr3yGA=w3374-h1898-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczPimfR1-VVmnIwpWP25LvPMj7DLDXVy-dQIiHylyfL_-7Lw5XUeXlu0FtSvrh1M8vBdkJYl0Z5kZqJV6Aro3JIuhnhFZGEJLfvCdY04g4D9gMlo6U7FzF2sO3TrUP-Xt5RiDrLa9D4330K_959vEyhD3g=w3374-h1898-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczNM-now21zCuyQQDVNVohXGD-9qIpbQc1566NP2fn--A82A2XL3AQRD3WLUod6Temqc2P3UgxVb6bN0LO2bzFFLZ440kQnK0mZZTcrfWIS2WK7jqFZteEV41u_n4DQXDV1257OF_512J4U8yadAoWevXA=w3374-h1898-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczOalwVXnTTB6my19dsydZyIy9vG-KFw_KVUbM3H2xrcdiIWDuvW0GK-yxsJzkHwiOrDEim6qd36lXdBX8xx3A1ccHIDeX-GunT4A27_gSXPV5FL_G55_F8HPMUwoux3CSICM9KdL9wRhnI6vYeU_4RL4Q=w3374-h1898-s-no-gm', ratio: '4:3' },
+                ]
+              },
               { logo: 'https://media.licdn.com/dms/image/v2/D4D0BAQHupr1U3gIQKA/company-logo_200_200/company-logo_200_200/0/1719839010650/globant_logo?e=2147483647&v=beta&t=RIDw8vIPTT21rNVDzZuUuMXaZiSCvhv7AUbYUrX8AnM', title: 'Tech Night – Games e GenAI', org: 'Globant', desc: 'Evento técnico explorando aplicações de Inteligência Artificial Generativa no desenvolvimento de jogos, experiências interativas e produtos digitais.' },
               { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWqeFLRcNwmj9CKVTc5h8fg185E2-IHnIfRA&s', title: 'PREPARADÃO – Relações Corporativas e GenAI', org: 'Santander', desc: 'Programa de desenvolvimento com foco em relações corporativas, inovação, tecnologia e aplicações de Inteligência Artificial Generativa no contexto empresarial.' },
-              { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV2Vo2PthiZmE68Z2gKWY3Ruy_94i_wXkH-w&s', title: 'Hackathon – Segurança e Mobilidade no Bairro da Liberdade', org: 'ADE SAMPA', desc: 'Maratona de inovação com foco na criação de soluções tecnológicas para desafios urbanos envolvendo segurança, mobilidade e qualidade de vida.' },
+              {
+                logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV2Vo2PthiZmE68Z2gKWY3Ruy_94i_wXkH-w&s', title: 'Hackathon – Segurança e Mobilidade no Bairro da Liberdade', org: 'ADE SAMPA', desc: 'Maratona de inovação com foco na criação de soluções tecnológicas para desafios urbanos envolvendo segurança, mobilidade e qualidade de vida.', gallery: [
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczPJkDRFzVrBHxttQ-cBTfoX_Sus6MiRANBtQoCFCsWPkpcK2eAE3GryhJEUOAm2BUKRibOkmKWNyzpsW8TFxyQawx9O4bnI0oMfCoMi68KPy6hoSPOPdQarZE6Ao10_2HGUPjdA8qzFu4cOCB_Qf5kLDA=w1080-h1299-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczMDAwxwa2RoNkDaOH-F7GVvQksBEqk3eirXcj9YmlL4qeyDPlCXehI2Oz7c7S7xaFf3UI4d3a7AOIZ7rPhh-UJRX1xK5nM34o52M_XKkjkgzRUJZMWbbqtyBjorowzN1GGGRJpi5GI7v78T2x9Zypd5rw=w1078-h1297-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczMymYfw2jk4MfQm17I9S3jeW5oYkNVONfizzfhURJCsJfOMmJHDC_l_wfr5F5s7LS729SgD-gxXdyByvuKKL-KoTBjwVQDriTLnHe1KOUlK1mQfowhdRimf3b01rsqEFxS8ks4D95m69S1sRJWSh5kkrA=w900-h1083-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczOpxf9d-N3vywAeMcaikL3syFhUt4nUUR7YOknXZrHDeca7EUKcYB7BuvMnAOEWTi0F8Ir5MHxqpuDPqPyi3DOhyD9tAP8Xb5tbuWvIVh_wDFg3Sc7l0GF7OKGqBrsnV-5olqApxJyfGDMF5blUY_Da5Q=w1600-h900-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczN_H0aYaV3tVIstm2hO-tM2sghAwTxpyULo6qYSRI3NK9dmrp0QS_KTPPkC__x9rm5Koir0SXKkp_XMWmRihtIRLNnUvcLyhjkNYnS68q0PY63JVPl9aJ0EeXsMXNr7EDQYEnhSDR8SsqldfrqT1GSGtg=w1280-h960-s-no-gm', ratio: '4:3' },
+                ]
+              },
               { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQr2iuadE_A23C2R2NztevY0bHqc-ZbIJyGw&s', title: 'Hackathon Grite', org: 'Visite São Paulo', desc: 'Hackathon voltado à inovação nas Centrais de Informações Turísticas (CITs), com desenvolvimento de soluções digitais para melhoria da experiência do turista e modernização dos serviços de informação da cidade.' },
               { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6D1imTtkixNJVAjQxXFfDeB9wbUdmncfgg&s', title: 'Turma Itaú Atacado', org: 'Itaú BBA', desc: 'Programa de formação e aproximação com o mercado financeiro de atacado, com foco em negócios, mercado de capitais, estratégia corporativa e relacionamento com grandes empresas.' },
               { logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6D1imTtkixNJVAjQxXFfDeB9wbUdmncfgg&s', title: 'Conferência Juntos – Equidade e Inclusão no Mundo Corporativo', org: 'Itaú', desc: 'Evento nacional focado em diversidade, equidade e inclusão no ambiente corporativo, com palestras, painéis e networking entre profissionais e líderes do mercado.' },
+              {
+                logo: 'https://static.wixstatic.com/media/0091ec_e8a8b64b043c449286b586de6352b6e0~mv2.png/v1/fit/w_2500,h_1330,al_c/0091ec_e8a8b64b043c449286b586de6352b6e0~mv2.png', title: 'Conferência Juntos 2023', org: 'Itaú', desc: 'Edição em São Paulo com plenárias "Nossas raízes" (Itaú, Citi, Coca-Cola), "Produzindo frutos" (Natura, Oracle, Cubo Itaú), "Espalhando sementes" (Mover, IBO, Carreira Preta, Indique uma Preta) e "A colheita" com MV Bill e Wellington Vitorino. Workshop de currículo, feira de carreiras e workshops: IA no desenvolvimento profissional (Citi), marketing digital (Nestlé), experiência de carreira (Natura), soft skills (Coca-Cola), IA para negócios (Cubo Itaú) e educação financeira (Itaú).', gallery: [
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczOFDP_j-n8cvD_0V18pzxPwNnWzdh-nzlEpyv_CFYSYiaLQk4EBhvzug4Y0_XAzwH6zLmSAhOeebHKGmN2_Llyt3r5T8hOYxSWFz5r3sRSVar01pl09UjbgF5esVmQfXWyErX3AfNoGCAxxCyhtXGQIFw=w1068-h1898-s-no-gm', ratio: '1:1' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczMk9rBXk9ZvnD8JYCje7YeIeT7t0HbgZHHoL28X_VePo_vpY1GmGg3Zo5U4XOlQnzcLsRV6JJtw38CAIKX4VYCEn0ZZYUCDiEGAeTPpKs683kGFZJDfB6Q_eBi9u_AII_QqVV182Vrp-VaIKKS_aIAvEg=w3374-h1898-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczMT_UMmymBqkSCvaidOFOZwA42UcTYdxdhxinJKI1Byyzo8S6T6k_j_xmKBENMxQKGWP21g7QmtLzjRnjWrmIJIDxlFZ3l_OqQ-mqm7GIV45cNQcCavQjus8ZNmxvSJBH9Rgzn0NLujJ-a3s0Yp9bzToA=w3374-h1898-s-no-gm', ratio: '4:3' },
+                  { src: 'https://lh3.googleusercontent.com/pw/AP1GczPWXQKLR9mzhU_PseQEcHBvncModaBjiHuV3KitGkUIAKkbnPykKSVAHJvh9Iu_qTHZ3k6ZRLrBzepYVbKFVQvI6aiF2_ne242ngMhvKOYNDuDgmVg-g-XBid8T5kvRPP6MtR1z04ZWEo1CcMfEMxoZeQ=w3374-h1898-s-no-gm', ratio: '4:3' },
+                ]
+              },
+              { logo: 'https://static.wixstatic.com/media/0091ec_e8a8b64b043c449286b586de6352b6e0~mv2.png/v1/fit/w_2500,h_1330,al_c/0091ec_e8a8b64b043c449286b586de6352b6e0~mv2.png', title: 'Conferência Juntos 2024', org: 'Itaú', desc: 'Edições em São Paulo (23/11, Cubo Itaú, 8h–19h) e Belo Horizonte (30/11, Espaço Hotmart, 9h–19h). Convidado especial MV Bill. Café de lideranças no rooftop do Cubo Itaú com rodas de conversa sobre networking, mentoria e desenvolvimento de equipes. Plenárias com lideranças parceiras, workshops técnicos e interpessoais, feira de carreiras, momentos de empregabilidade e revisão de currículos por profissionais experientes.' },
               { logo: 'https://designconceitual.com.br/wp-content/uploads/2023/12/Ita%C3%BA-novo-logotipo-2023-1000x600.jpg', title: 'Marketing e Storytelling', org: 'Itaú CEIC', desc: 'Capacitação voltada a comunicação estratégica, construção de narrativas de impacto e storytelling aplicado a marketing, marcas e posicionamento corporativo.' },
               { logo: 'https://logodownload.org/wp-content/uploads/2014/08/heineken-logo-1.png', title: 'WeLab', org: 'Heineken', desc: 'Programa de desenvolvimento pessoal e profissional com foco em autoconhecimento, habilidades profissionais, pensamento crítico e preparação para o mercado de trabalho por meio de trilhas práticas e colaborativas.' },
             ].map((e) => (
-              <div key={e.title} className="flex gap-4">
-                <img src={e.logo} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
-                <div className="min-w-0">
-                  <h3 className="font-medium text-zinc-900 dark:text-zinc-50">{e.title}</h3>
-                  <p className="text-[13px] text-zinc-500 dark:text-zinc-500 mb-1">{e.org}</p>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{e.desc}</p>
+              <div key={e.title} className="flex flex-col gap-4">
+                <div className="flex gap-4">
+                  <img src={e.logo} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="font-medium text-zinc-900 dark:text-zinc-50">{e.title}</h3>
+                    <p className="text-[13px] text-zinc-500 dark:text-zinc-500 mb-1">{e.org}</p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{e.desc}</p>
+                  </div>
                 </div>
+                {'gallery' in e && e.gallery && e.gallery.length > 0 && (() => {
+                  const ROW_H = 160;
+                  const getWidth = (ratio: string) => {
+                    const [w, h] = ratio.split(':').map(Number);
+                    return Math.round(ROW_H * (w / h));
+                  };
+                  const galleryUrls = e.gallery.map((item: { src?: string } | string) => (typeof item === 'string' ? item : item.src!));
+                  return (
+                    <div className="flex flex-wrap gap-2 pl-14" style={{ alignContent: 'flex-start' }}>
+                      {e.gallery.map((item, i) => {
+                        const src = typeof item === 'string' ? item : item.src;
+                        const ratio = typeof item === 'string' ? '4:3' : item.ratio;
+                        const w = getWidth(ratio);
+                        return (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setLightbox({ urls: galleryUrls, index: i, eventLogo: e.logo, eventTitle: e.title })}
+                            className="shrink-0 overflow-hidden rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 hover:opacity-90 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-500 focus:ring-offset-2 dark:focus:ring-offset-black"
+                            style={{ height: ROW_H, width: w }}
+                          >
+                            <img src={src} alt={`${e.title} — foto ${i + 1}`} className="h-full w-full object-cover pointer-events-none" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
